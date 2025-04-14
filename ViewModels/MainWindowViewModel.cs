@@ -15,7 +15,7 @@ public partial class MainWindowViewModel : ViewModelBase
 		_serviceProvider = sP;
 		_logController = lc;
 		_messenger.Register<MainWindowViewModel, RouteMessage>(this, RouteToPage);
-		_currentPage = sP.GetRequiredService<SplashScreenViewModel>();
+		_currentPage = sP.GetRequiredService<SplashScreenPageViewModel>();
 	}
 
 	/// <summary>

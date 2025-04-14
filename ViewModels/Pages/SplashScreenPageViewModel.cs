@@ -1,13 +1,13 @@
 ﻿namespace Taggle.ViewModels.Pages;
 
 [RegisterSingleton]
-public sealed partial class SplashScreenViewModel : ViewModelBase
+public sealed partial class SplashScreenPageViewModel : ViewModelBase
 {
 	private readonly AppDataService _appDataService;
 	private readonly DatabaseService _databaseService;
 	private readonly LogController _logController;
 
-	public SplashScreenViewModel(AppDataService ads, DatabaseService ds, LogController lc)
+	public SplashScreenPageViewModel(AppDataService ads, DatabaseService ds, LogController lc)
 	{
 		_appDataService = ads;
 		_databaseService = ds;
