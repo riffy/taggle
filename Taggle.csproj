@@ -37,7 +37,16 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

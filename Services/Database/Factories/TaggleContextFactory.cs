@@ -1,4 +1,4 @@
-﻿namespace Taggle.Services.Database;
+﻿namespace Taggle.Services.Database.Factories;
 
 public sealed class TaggleContextFactory(DbContextOptions<TaggleContext> options) : IDbContextFactory<TaggleContext>
 {

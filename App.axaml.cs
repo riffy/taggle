@@ -26,17 +26,17 @@ public partial class App : Application
 			.AddOptions()
 			.AddDbContextFactory<TaggleContext, TaggleContextFactory>(options =>
 			{
-				#if DEBUG
+#if DEBUG
 					options
 						.UseSqlite($"Data Source=Taggle.db")
 						.EnableSensitiveDataLogging()
 						.EnableDetailedErrors()
 						.LogTo(Console.WriteLine, LogLevel.Information);
-				#else
+#else
 					options
 						.UseSqlite($"Data Source={Path.Combine(AppDataService.AppDataDirectory, "Taggle.db")}")
 						.EnableDetailedErrors();
-				#endif
+#endif
 			})
 			.AutoRegister()
 			.BuildServiceProvider();

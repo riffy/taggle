@@ -4,6 +4,7 @@ global using System.Linq;
 global using System.Threading;
 global using System.Runtime.CompilerServices;
 global using System.Collections.ObjectModel;
+global using System.ComponentModel.DataAnnotations.Schema;
 
 global using Avalonia;
 global using Avalonia.Controls;
@@ -30,10 +31,10 @@ global using Taggle.Messages;
 global using Taggle.Services.AppData.Services;
 global using Taggle.Services.Database;
 global using Taggle.Services.Database.Services;
+global using Taggle.Services.Database.Factories;
 global using Taggle.Services.Log.Controllers;
 global using Taggle.Services.Log.Models;
 global using Taggle.Views;
 global using Taggle.ViewModels;
 global using Taggle.ViewModels.Pages;
-global using Taggle.Models;
 
