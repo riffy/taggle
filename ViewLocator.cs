@@ -2,13 +2,17 @@ namespace Taggle;
 
 public class ViewLocator : IDataTemplate
 {
+	private IServiceProvider? _serviceProvider;
 
 	/// <summary>
 	/// Build the control to display.
 	/// </summary>
     public Control? Build(object? param)
     {
-	    var name = param?.GetType().FullName;
+	    if (param is null) return null;
+	    _serviceProvider ??= ((App)Application.Current!).Services!;
+
+	    var name = param.GetType().FullName;
         if (name is null) return null;
 
         // Strip ending "ViewModel"
@@ -18,11 +22,17 @@ public class ViewLocator : IDataTemplate
         // Replace namespace "ViewModels" with "Views"
         name = name.Replace("ViewModel", "View");
         var type = Type.GetType(name);
+        if (type == null)
+	        return new TextBlock { Text = "Not Found: " + name };
 
-        if (type != null)
-            return (Control)Activator.CreateInstance(type)!;
-
-        return new TextBlock { Text = "Not Found: " + name };
+        Control? control;
+        if ( _serviceProvider.GetService(type) is Control registeredControl)
+	        control = registeredControl;
+        else
+	        control = ActivatorUtilities.CreateInstance(_serviceProvider, type) as Control;
+        Console.WriteLine(type);
+        control!.DataContext = param;
+        return control;
     }
 
     public bool Match(object? data) =>

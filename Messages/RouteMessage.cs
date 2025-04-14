@@ -1,3 +1,3 @@
 ﻿namespace Taggle.Messages;
 
-public sealed class RouteMessage(Type routeToService) : ValueChangedMessage<Type>(routeToService);
+public sealed class RouteMessage(Type viewModelBase) : ValueChangedMessage<Type>(viewModelBase);

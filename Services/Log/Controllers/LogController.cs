@@ -31,18 +31,76 @@ public sealed class LogController
 		return true;
 	}
 
+	#region INFO / WARN / ERROR / DEBUG
+	/// <summary>
+	/// Logs an informational message
+	/// </summary>
+	public void Info(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Informational);
+	}
+
+	/// <summary>
+	/// Logs a warning message
+	/// </summary>
+	public void Warn(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Warning);
+	}
+
+	/// <summary>
+	/// Logs an exception with calling method information
+	/// </summary>
+	public void Exception(Exception ex,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, $"Method: {memberName} - {ex.Message}", LogSeverity.Error);
+	}
+
+	/// <summary>
+	/// Logs an error message
+	/// </summary>
+	public void Error(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Error);
+	}
+
+	/// <summary>
+	/// Logs a debug message
+	/// </summary>
+	public void Debug(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Debug);
+	}
+
+	/// <summary>
+	/// Logs a success message
+	/// </summary>
+	public void Success(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Success);
+	}
+	#endregion
+
 	#region LOG
 
 	/// <summary>
 	/// Logs the message with the severity and the title
 	/// </summary>
-	public void Log(string title, string message, InfoBarSeverity severity = InfoBarSeverity.Informational) =>
+	public void Log(string title, string message, LogSeverity severity = LogSeverity.Informational) =>
 		LogInternal(title, message, severity);
 
 	/// <summary>
 	/// Logs the message with the severity and the title is the class name of the caller
 	/// </summary>
-	public void Log(string message, InfoBarSeverity severity = InfoBarSeverity.Informational, [CallerFilePath] string filePath = "")
+	public void Log(string message, LogSeverity severity = LogSeverity.Informational, [CallerFilePath] string filePath = "")
 	{
 		var className = Path.GetFileNameWithoutExtension(filePath);
 		LogInternal(className, message, severity);
@@ -51,9 +109,10 @@ public sealed class LogController
 	/// <summary>
 	/// Internal method to handle logging logic
 	/// </summary>
-	private void LogInternal(string title, string message, InfoBarSeverity severity)
+	private void LogInternal(string title, string message, LogSeverity severity)
 	{
 		if (_debugMode) Console.WriteLine(message);
+		if (severity == LogSeverity.Debug) return;
 
 		var logMessage = new LogMessage(title, message, severity);
 		Logs.Add(logMessage);

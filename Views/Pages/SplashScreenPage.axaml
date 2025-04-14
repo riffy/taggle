@@ -33,6 +33,7 @@
 				Maximum="{Binding ValueProgressMax}"
 				Value="{Binding ValueProgress}"/>
 			<TextBlock
+				FontFamily="Urbanist"
 				FontSize="20"
 				HorizontalAlignment="Center"
 				IsVisible="True"
@@ -40,8 +41,8 @@
 			<ui:InfoBar
 				Title="{Binding InfoBarTitle}"
 				Message="{Binding InfoBarText}"
-				Severity="Informational"
-				IsOpen="False"
+				Severity="{Binding InfoBarSeverity}"
+				IsOpen="{Binding ShowInfoBar}"
 				IsClosable="False"
 				FontFamily="{StaticResource UrbanistFont}"
 				/>

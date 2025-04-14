@@ -1,0 +1,35 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmp="clr-namespace:Taggle.ViewModels.Pages"
+	xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Taggle.Views.Pages.MainPage"
+	x:DataType="vmp:MainPageViewModel">
+	<Grid RowDefinitions="Auto, *">
+		<!-- Top Bar -->
+		<Grid
+			Name="TitleBarHost"
+			ColumnDefinitions="Auto, Auto, *, Auto"
+			Background="Transparent">
+			<Image
+				Margin="12 4"
+				IsHitTestVisible="False"
+				Source="/Assets/avalonia-logo.ico"
+				Width="18" Height="18"
+				DockPanel.Dock="Left"
+				Name="WindowIcon"
+				RenderOptions.BitmapInterpolationMode="HighQuality">
+				<Image.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+					</OnPlatform>
+				</Image.IsVisible>
+			</Image>
+		</Grid>
+		<Button Grid.Row="1" Content="Test" />
+	</Grid>
+</UserControl>
+

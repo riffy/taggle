@@ -15,7 +15,7 @@ public partial class MainWindowViewModel : ViewModelBase
 		_serviceProvider = sP;
 		_logController = lc;
 		_messenger.Register<MainWindowViewModel, RouteMessage>(this, RouteToPage);
-		_currentPage = sP.GetRequiredService<SplashScreenPageViewModel>();
+		CurrentPage = sP.GetRequiredService<SplashScreenPageViewModel>();
 	}
 
 	/// <summary>
@@ -25,18 +25,18 @@ public partial class MainWindowViewModel : ViewModelBase
 	{
 		try
 		{
-			var page = (ViewModelBase?)_serviceProvider.GetService(message.Value);
+			var page = (ViewModelBase?)_serviceProvider.GetRequiredService(message.Value);
 			if (page is null)
 			{
-				_logController.Log($"No page / service found for {message.Value.ToString()}", InfoBarSeverity.Error);
+				_logController.Error($"No page / service found for {message.Value.ToString()}");
 				return;
 			}
-
+			_logController.Debug($"Switching MainWindow Navigation to: {message.Value.ToString()}");
 			CurrentPage = page;
 		}
 		catch (Exception ex)
 		{
-			_logController.Log($"{nameof(RouteToPage)} - Exception occurred: {ex.Message}", InfoBarSeverity.Error);
+			_logController.Exception(ex);
 		}
 	}
 }
