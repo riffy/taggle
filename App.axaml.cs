@@ -5,6 +5,8 @@ public partial class App : Application
 	public IServiceProvider? Services { get; private set; }
 	public static List<string> StartupArguments { get; private set; } = [];
 
+	public static Window? MainWindow { get; private set; }
+
     public override void Initialize() =>
 	    AvaloniaXamlLoader.Load(this);
 
@@ -21,13 +23,28 @@ public partial class App : Application
 
 	    // Register all services
 		Services = new ServiceCollection()
+			.AddOptions()
+			.AddDbContextFactory<TaggleContext, TaggleContextFactory>(options =>
+			{
+				#if DEBUG
+					options
+						.UseSqlite($"Data Source=Taggle.db")
+						.EnableSensitiveDataLogging()
+						.EnableDetailedErrors()
+						.LogTo(Console.WriteLine, LogLevel.Information);
+				#else
+					options
+						.UseSqlite($"Data Source={Path.Combine(AppDataService.AppDataDirectory, "Taggle.db")}")
+						.EnableDetailedErrors();
+				#endif
+			})
 			.AutoRegister()
 			.BuildServiceProvider();
 
-	    desktop.MainWindow = new MainWindow
-	    {
-		    DataContext = Services.GetRequiredService<MainWindowViewModel>()
-	    };
+		MainWindow = desktop.MainWindow = new MainWindow
+		{
+			DataContext = Services.GetRequiredService<MainWindowViewModel>()
+		};
 
         base.OnFrameworkInitializationCompleted();
     }
@@ -40,8 +57,22 @@ public partial class App : Application
 
         // remove each entry found
         foreach (var plugin in dataValidationPluginsToRemove)
-        {
             BindingPlugins.DataValidators.Remove(plugin);
-        }
     }
+
+    #region THEME
+
+    /// <summary>
+    /// Toggles the dark mode on/off based on the current
+    /// theme variant.
+    /// </summary>
+    public static void ToggleDarkMode()
+    {
+	    if (MainWindow is null) return;
+	    MainWindow.RequestedThemeVariant =
+		    MainWindow.RequestedThemeVariant == ThemeVariant.Light ?
+			    ThemeVariant.Dark : ThemeVariant.Light;
+    }
+
+    #endregion
 }
