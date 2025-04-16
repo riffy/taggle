@@ -1,7 +1,7 @@
 ﻿namespace Taggle.Models.Navigation;
 
-public sealed class NavigationTarget
+public sealed class NavigationTarget(Type targetType, object[]? args = null)
 {
-	public required Type TargetType { get; init; }
-	public required object[] Args { get; init; } = [];
+	public Type TargetType { get; } = targetType;
+	public object[] Args { get; init; } = args ?? [];
 }

@@ -145,7 +145,7 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 		try
 		{
 			LoadingText = "Loading Configuration ...";
-			if (await _configController.LoadConfigFromFile(true)) return true;
+			if (await _configController.InitializeConfig()) return true;
 			DisplayInfoBar(
 				"Error",
 				"Error while trying to initialize Configuration.",
@@ -182,10 +182,6 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 			_loadQueue.Enqueue(FinalizeApp);
 			await Task.Delay(500);
 		}
-		else
-			 // Apply Config
-			 App.MainWindow.RequestedThemeVariant =
-				 _configController.Config.DarkMode ? ThemeVariant.Dark : ThemeVariant.Light;
 		return true;
 	}
 	#endregion

@@ -16,7 +16,6 @@ public sealed class LocalConfig : INotifyPropertyChanged
 	}
 	#endregion
 
-
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>

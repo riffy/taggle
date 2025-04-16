@@ -3,7 +3,7 @@
 [RegisterSingleton]
 public sealed class ConfigController(LogController logController, ConfigService configService)
 {
-	public LocalConfig Config { get; private set; } = new();
+	public readonly LocalConfig Config = new();
 
 	/// <summary>
 	/// Saves the current local config to the temp file
@@ -19,17 +19,15 @@ public sealed class ConfigController(LogController logController, ConfigService 
 	/// Returns true on success, else false
 	/// </summary>
 	/// <returns></returns>
-	public async Task<bool> LoadConfigFromFile(bool createIfMissing)
+	public async Task<bool> InitializeConfig()
 	{
 		try
 		{
 			var config = await configService.LoadConfigFromFile();
 			if (config is null)
-			{
-				if (createIfMissing) return await SaveConfigToFile();
-				return false;
-			}
-			Config = config;
+				return await SaveConfigToFile();
+			// Initialize fields
+			Config.DarkMode = config.DarkMode;
 			return true;
 		}
 		catch (Exception ex)

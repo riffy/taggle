@@ -48,5 +48,6 @@ global using Taggle.Services.Log.Models;
 global using Taggle.Views;
 global using Taggle.Views.Pages;
 global using Taggle.ViewModels;
+global using Taggle.ViewModels.Frames;
 global using Taggle.ViewModels.Pages;
 

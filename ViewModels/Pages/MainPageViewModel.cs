@@ -38,7 +38,11 @@ public sealed partial class MainPageViewModel : ViewModelBase
 	{
 		NavigationItems.Add(new("Home", Symbol.Home, null, Symbol.HomeFilled));
 		NavigationItems.Add(new("Search", Symbol.Zoom));
-		FooterNavigations.Add(new("Settings", Symbol.Settings, null, Symbol.SettingsFilled));
+		FooterNavigations.Add(new(
+			"Settings",
+			Symbol.Settings,
+			new(typeof(SettingsFrameViewModel)),
+			Symbol.SettingsFilled));
 	}
 
 	public async Task NavigateUsingItem(NavigationItem item)
