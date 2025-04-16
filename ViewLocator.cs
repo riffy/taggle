@@ -30,7 +30,6 @@ public class ViewLocator : IDataTemplate
 	        control = registeredControl;
         else
 	        control = ActivatorUtilities.CreateInstance(_serviceProvider, type) as Control;
-        Console.WriteLine(type);
         control!.DataContext = param;
         return control;
     }

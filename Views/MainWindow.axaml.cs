@@ -1,8 +1,6 @@
 namespace Taggle.Views;
 
-using FluentAvalonia.UI.Windowing;
-
-public partial class MainWindow : AppWindow
+public partial class MainWindow : Window
 {
     public MainWindow()
     {

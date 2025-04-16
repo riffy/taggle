@@ -3,7 +3,8 @@
 [RegisterSingleton]
 public sealed class AppDataService
 {
-	public static string AppDataDirectory { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDomain.CurrentDomain.FriendlyName);
+	public static string AppDataDirectory { get; } =
+		Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDomain.CurrentDomain.FriendlyName);
 
 	#region DIRECTORY
 	/// <summary>

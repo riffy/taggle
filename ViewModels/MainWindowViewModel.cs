@@ -14,14 +14,14 @@ public partial class MainWindowViewModel : ViewModelBase
 	{
 		_serviceProvider = sP;
 		_logController = lc;
-		_messenger.Register<MainWindowViewModel, RouteMessage>(this, RouteToPage);
+		_messenger.Register<MainWindowViewModel, MainWindowRouteMessage>(this, RouteToPage);
 		CurrentPage = sP.GetRequiredService<SplashScreenPageViewModel>();
 	}
 
 	/// <summary>
-	/// Receiver for the RouteMessage, tries to route to the given page / service.
+	/// Receiver for the MainWindowRouteMessage, tries to route to the given page / service.
 	/// </summary>
-	private void RouteToPage(MainWindowViewModel recipient, RouteMessage message)
+	private void RouteToPage(MainWindowViewModel recipient, MainWindowRouteMessage message)
 	{
 		try
 		{

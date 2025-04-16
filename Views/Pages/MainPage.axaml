@@ -5,6 +5,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:vmp="clr-namespace:Taggle.ViewModels.Pages"
 	xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+	xmlns:pages="clr-namespace:Taggle.Views.Pages"
+	xmlns:mnav="using:Taggle.Models.Navigation"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Taggle.Views.Pages.MainPage"
 	x:DataType="vmp:MainPageViewModel">
@@ -28,8 +30,65 @@
 					</OnPlatform>
 				</Image.IsVisible>
 			</Image>
+			<TextBlock
+				Text="{Binding Title, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+				FontSize="12"
+				IsHitTestVisible="False"
+				VerticalAlignment="Center"
+				Grid.Column="1">
+				<TextBlock.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+					</OnPlatform>
+				</TextBlock.IsVisible>
+			</TextBlock>
+			<Border
+				Grid.Column="2"
+				Padding="6">
+				<AutoCompleteBox
+					Name="SearchBox"
+					MaxWidth="500"
+					Watermark="Search"
+					FilterMode="ContainsOrdinal">
+					<AutoCompleteBox.InnerRightContent>
+						<StackPanel
+							Orientation="Horizontal">
+							<Button
+								Margin="0, 5, 10, 5"
+								IsEnabled="False">
+								<Button.Content>
+									<ui:SymbolIcon Symbol="Zoom"/>
+								</Button.Content>
+							</Button>
+						</StackPanel>
+					</AutoCompleteBox.InnerRightContent>
+				</AutoCompleteBox>
+			</Border>
 		</Grid>
-		<Button Grid.Row="1" Content="Test" />
+		<!-- Navigation & Content -->
+		<ui:NavigationView
+			Grid.Row="1"
+			Margin="0, 0, 10, 5"
+			PaneDisplayMode="Auto"
+			IsSettingsVisible="False"
+			AlwaysShowHeader="False">
+			<!-- Items -->
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem Content="Home" Tag="Home" IconSource="Home" />
+				<ui:NavigationViewItem Content="Search" Tag="Search" IconSource="Zoom"/>
+				<ui:NavigationViewItem Content="Collections" Tag="Collections" IconSource="Library">
+					<ui:NavigationViewItem.MenuItems>
+						<ui:NavigationViewItem Content="New" Tag="CollectionNew" IconSource="Add"/>
+					</ui:NavigationViewItem.MenuItems>
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
+			<!-- Content -->
+			<ui:Frame Name="FrameView" Content="{Binding CurrentFrame}" />
+			<!-- Footer -->
+			<ui:NavigationView.PaneFooter>
+				<ui:NavigationViewItem Content="Settings" Tag="Settings" IconSource="Settings" />
+			</ui:NavigationView.PaneFooter>
+		</ui:NavigationView>
 	</Grid>
 </UserControl>
 

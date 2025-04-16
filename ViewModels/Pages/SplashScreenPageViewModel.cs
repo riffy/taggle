@@ -7,15 +7,18 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 	private readonly AppDataService _appDataService;
 	private readonly DatabaseService _databaseService;
 	private readonly LogController _logController;
+	private readonly ConfigController _configController;
 
-	public SplashScreenPageViewModel(AppDataService ads, DatabaseService ds, LogController lc)
+	public SplashScreenPageViewModel(AppDataService ads, ConfigController cc, DatabaseService ds, LogController lc)
 	{
 		_appDataService = ads;
 		_databaseService = ds;
 		_logController = lc;
+		_configController = cc;
 		_loadQueue.Enqueue(InitializeApp);
 		_loadQueue.Enqueue(InitializeLog);
 		_loadQueue.Enqueue(InitializeDatabase);
+		_loadQueue.Enqueue(InitializeConfig);
 		_loadQueue.Enqueue(FinalizeApp);
 		TriggerNextLoadStep();
 	}
@@ -46,7 +49,7 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 					InfoBarSeverity.Error);
 			}
 		else
-			_messenger.Send(new RouteMessage(typeof(MainPageViewModel)));
+			_messenger.Send(new MainWindowRouteMessage(typeof(MainPageViewModel)));
 
 	}
 	#endregion
@@ -135,6 +138,32 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 	}
 
 	/// <summary>
+	/// Initialize database and apply migrations.
+	/// </summary>
+	private async Task<bool> InitializeConfig()
+	{
+		try
+		{
+			LoadingText = "Loading Configuration ...";
+			if (await _configController.LoadConfigFromFile(true)) return true;
+			DisplayInfoBar(
+				"Error",
+				"Error while trying to initialize Configuration.",
+				InfoBarSeverity.Error);
+			return false;
+		}
+		catch (Exception ex)
+		{
+			_logController.Exception(ex);
+			DisplayInfoBar(
+				"Critical Error",
+				$"Cirtial Error while initializing Database:\n{ex.Message}",
+				InfoBarSeverity.Error);
+			return false;
+		}
+	}
+
+	/// <summary>
 	/// Finalizes the app, in case the data is loaded faster
 	/// than the UI, queues itself to delay any further UI action.
 	/// </summary>
@@ -153,6 +182,10 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 			_loadQueue.Enqueue(FinalizeApp);
 			await Task.Delay(500);
 		}
+		else
+			 // Apply Config
+			 App.MainWindow.RequestedThemeVariant =
+				 _configController.Config.DarkMode ? ThemeVariant.Dark : ThemeVariant.Light;
 		return true;
 	}
 	#endregion
