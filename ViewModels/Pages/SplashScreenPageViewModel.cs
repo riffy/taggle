@@ -98,7 +98,7 @@ public sealed partial class SplashScreenPageViewModel : ViewModelBase
 					InfoBarSeverity.Error);
 				return false;
 			}
-			_logController.Log("Log initialized");
+			_logController.Info("Log initialized");
 			return true;
 		}
 		catch (Exception ex)

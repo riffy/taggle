@@ -67,27 +67,44 @@
 		</Grid>
 		<!-- Navigation & Content -->
 		<ui:NavigationView
+			x:Name="NavigationPanel"
 			Grid.Row="1"
 			Margin="0, 0, 10, 5"
 			PaneDisplayMode="Auto"
 			IsSettingsVisible="False"
-			AlwaysShowHeader="False">
+			AlwaysShowHeader="False"
+			MenuItemsSource="{Binding NavigationItems}"
+			FooterMenuItemsSource="{Binding FooterNavigations}"
+			SelectionChanged="NavigationPanel_OnSelectionChanged">
 			<!-- Items -->
-			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="Home" Tag="Home" IconSource="Home" />
-				<ui:NavigationViewItem Content="Search" Tag="Search" IconSource="Zoom"/>
-				<ui:NavigationViewItem Content="Collections" Tag="Collections" IconSource="Library">
-					<ui:NavigationViewItem.MenuItems>
-						<ui:NavigationViewItem Content="New" Tag="CollectionNew" IconSource="Add"/>
-					</ui:NavigationViewItem.MenuItems>
-				</ui:NavigationViewItem>
-			</ui:NavigationView.MenuItems>
+			<ui:NavigationView.MenuItemTemplateSelector>
+				<mnav:NavigationItemTemplateSelector>
+					<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+						<ui:NavigationViewItem
+							Content="{Binding Name}"
+							IconSource="{Binding Icon}"
+							SelectsOnInvoked="{Binding SelectOnInvoke}"
+							/>
+					</DataTemplate>
+					<mnav:NavigationItemTemplateSelector.ItemTemplateWithChildren>
+						<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+							<ui:NavigationViewItem
+								Content="{Binding Name}"
+								IconSource="{Binding Icon}"
+								MenuItems="{Binding Children}"
+								SelectsOnInvoked="{Binding SelectOnInvoke}"
+							/>
+						</DataTemplate>
+					</mnav:NavigationItemTemplateSelector.ItemTemplateWithChildren>
+					<mnav:NavigationItemTemplateSelector.SeparatorTemplate>
+						<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+							<ui:NavigationViewItemSeparator />
+						</DataTemplate>
+					</mnav:NavigationItemTemplateSelector.SeparatorTemplate>
+				</mnav:NavigationItemTemplateSelector>
+			</ui:NavigationView.MenuItemTemplateSelector>
 			<!-- Content -->
 			<ui:Frame Name="FrameView" Content="{Binding CurrentFrame}" />
-			<!-- Footer -->
-			<ui:NavigationView.PaneFooter>
-				<ui:NavigationViewItem Content="Settings" Tag="Settings" IconSource="Settings" />
-			</ui:NavigationView.PaneFooter>
 		</ui:NavigationView>
 	</Grid>
 </UserControl>

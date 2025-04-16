@@ -35,19 +35,23 @@ public sealed class LogController
 	/// <summary>
 	/// Logs an informational message
 	/// </summary>
-	public void Info(string message, [CallerFilePath] string filePath = "")
+	public void Info(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
 	{
 		var className = Path.GetFileNameWithoutExtension(filePath);
-		LogInternal(className, message, LogSeverity.Informational);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Informational);
 	}
 
 	/// <summary>
 	/// Logs a warning message
 	/// </summary>
-	public void Warn(string message, [CallerFilePath] string filePath = "")
+	public void Warn(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
 	{
 		var className = Path.GetFileNameWithoutExtension(filePath);
-		LogInternal(className, message, LogSeverity.Warning);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Warning);
 	}
 
 	/// <summary>
@@ -64,10 +68,12 @@ public sealed class LogController
 	/// <summary>
 	/// Logs an error message
 	/// </summary>
-	public void Error(string message, [CallerFilePath] string filePath = "")
+	public void Error(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
 	{
 		var className = Path.GetFileNameWithoutExtension(filePath);
-		LogInternal(className, message, LogSeverity.Error);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Error);
 	}
 
 	/// <summary>
@@ -90,22 +96,6 @@ public sealed class LogController
 	#endregion
 
 	#region LOG
-
-	/// <summary>
-	/// Logs the message with the severity and the title
-	/// </summary>
-	public void Log(string title, string message, LogSeverity severity = LogSeverity.Informational) =>
-		LogInternal(title, message, severity);
-
-	/// <summary>
-	/// Logs the message with the severity and the title is the class name of the caller
-	/// </summary>
-	public void Log(string message, LogSeverity severity = LogSeverity.Informational, [CallerFilePath] string filePath = "")
-	{
-		var className = Path.GetFileNameWithoutExtension(filePath);
-		LogInternal(className, message, severity);
-	}
-
 	/// <summary>
 	/// Internal method to handle logging logic
 	/// </summary>
