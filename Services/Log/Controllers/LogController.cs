@@ -3,12 +3,31 @@
 [RegisterSingleton]
 public sealed class LogController
 {
+	/// <summary>
+	/// If debug logs should be logged to console
+	/// </summary>
 	private readonly bool _debugMode;
+
+	/// <summary>
+	/// The log filename of the current session
+	/// </summary>
 	private readonly string _logFileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm-ss}.log";
+
+	/// <summary>
+	/// The directory in %temp% for Taggle for the logs
+	/// </summary>
 	private readonly string _logDirectory = Path.Combine(Path.GetTempPath() + AppDomain.CurrentDomain.FriendlyName);
 
-	public string LogFilePath => Path.Combine(_logDirectory, _logFileName);
+	/// <summary>
+	/// The file path for the current logfile
+	/// </summary>
+	public string LogFilePath =>
+		Path.Combine(_logDirectory, _logFileName);
 
+	/// <summary>
+	/// All logs during the session.
+	/// TODO: Possibly clear logs if a certain threshold is reached
+	/// </summary>
 	public readonly ObservableCollection<LogMessage> Logs = [];
 
 	public LogController()
@@ -101,7 +120,7 @@ public sealed class LogController
 	/// </summary>
 	private void LogInternal(string title, string message, LogSeverity severity)
 	{
-		if (_debugMode) Console.WriteLine(message);
+		if (_debugMode) Console.WriteLine($"{title} - {message}");
 		if (severity == LogSeverity.Debug) return;
 
 		var logMessage = new LogMessage(title, message, severity);

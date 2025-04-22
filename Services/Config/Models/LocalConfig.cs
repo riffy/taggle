@@ -2,18 +2,22 @@
 
 public sealed class LocalConfig : INotifyPropertyChanged
 {
-	#region DARK MODE
-	private bool _darkMode;
+	#region THEME
+	/// <summary>
+	/// The saved theme of the app
+	/// </summary>
+	private string _theme = ThemeHelper.THEME_SYSTEM_ID;
 
-	public bool DarkMode
+	public string Theme
 	{
-		get => _darkMode;
+		get => _theme;
 		set
 		{
-			_darkMode = value;
+			_theme = value;
 			OnPropertyChanged();
 		}
 	}
+
 	#endregion
 
 	public event PropertyChangedEventHandler? PropertyChanged;

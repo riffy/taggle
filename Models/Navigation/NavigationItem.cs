@@ -1,5 +1,12 @@
 ﻿namespace Taggle.Models.Navigation;
 
+/// <summary>
+/// A navigation item, that can possibly hold children
+/// </summary>
+/// <param name="name">Display name of the item</param>
+/// <param name="icon">The default icon of the item</param>
+/// <param name="target">The target for the navigation</param>
+/// <param name="activeIcon">An icon to use, when the item is currently active / being viewed</param>
 public sealed class NavigationItem(string name, Symbol icon, NavigationTarget? target = null, Symbol? activeIcon = null)
 {
 	/// <summary>

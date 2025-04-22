@@ -27,7 +27,7 @@ public sealed class ConfigController(LogController logController, ConfigService 
 			if (config is null)
 				return await SaveConfigToFile();
 			// Initialize fields
-			Config.DarkMode = config.DarkMode;
+			Config.Theme = config.Theme;
 			return true;
 		}
 		catch (Exception ex)

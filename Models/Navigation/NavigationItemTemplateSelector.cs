@@ -1,5 +1,8 @@
 ﻿namespace Taggle.Models.Navigation;
 
+/// <summary>
+/// Template selector for navigation items
+/// </summary>
 public sealed class NavigationItemTemplateSelector : DataTemplateSelector
 {
 	[Content]

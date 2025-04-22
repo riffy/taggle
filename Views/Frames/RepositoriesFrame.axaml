@@ -1,0 +1,59 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmf="clr-namespace:Taggle.ViewModels.Frames"
+	xmlns:sm="using:Taggle.Services.Repositories.Models"
+	xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Taggle.Views.Frames.RepositoriesFrame"
+	x:DataType="vmf:RepositoriesFrameViewModel">
+	<SplitView
+		x:Name="SplitView"
+		PanePlacement="Right"
+		DisplayMode="Inline"
+		OpenPaneLength="240">
+		<SplitView.Content>
+			<Grid RowDefinitions="Auto, *">
+				<Button
+					Grid.Row="0"
+					Margin="10"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Command="{Binding AddNewRepositoryCommand}">
+					<Button.Content>
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="Add" Margin="0, 0, 10, 0"></ui:SymbolIcon>
+							<TextBlock
+								Text="Add Repository"
+								FontFamily="{StaticResource UrbanistFont}" />
+						</StackPanel>
+					</Button.Content>
+				</Button>
+				<DataGrid
+					x:Name="RepositoryTable"
+					Grid.Row="1"
+					Margin="10"
+					IsReadOnly="True"
+					GridLinesVisibility="All"
+					BorderThickness="1"
+					BorderBrush="Gray"
+					ItemsSource="{Binding Repositories}"
+					CanUserSortColumns="True"
+					CanUserResizeColumns="True"
+					FontFamily="{StaticResource UrbanistFont}">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+						<DataGridTextColumn Header="Path" Binding="{Binding Path}" />
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+		</SplitView.Content>
+		<SplitView.Pane>
+			<TextBlock Text="Details"></TextBlock>
+		</SplitView.Pane>
+	</SplitView>
+
+</UserControl>
+

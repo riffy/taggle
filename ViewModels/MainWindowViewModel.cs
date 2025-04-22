@@ -18,18 +18,14 @@ public partial class MainWindowViewModel : ViewModelBase
 		_configController = cc;
 		_messenger.Register<MainWindowViewModel, MainWindowRouteMessage>(this, RouteToPage);
 		CurrentPage = sP.GetRequiredService<SplashScreenPageViewModel>();
-		_configController.Config.PropertyChanged += ApplyDarkMode;
+		_configController.Config.PropertyChanged += ApplyTheme;
 	}
 
-	private void ApplyDarkMode(object? sender, PropertyChangedEventArgs e)
+	private void ApplyTheme(object? sender, PropertyChangedEventArgs e)
 	{
-		Console.WriteLine("0");
-		if (e.PropertyName != nameof(LocalConfig.DarkMode)) return;
-		Console.WriteLine("1");
+		if (e.PropertyName != nameof(LocalConfig.Theme)) return;
 		if (App.MainWindow is null) return;
-		Console.WriteLine("2");
-		App.MainWindow.RequestedThemeVariant =
-			_configController.Config.DarkMode ? ThemeVariant.Dark : ThemeVariant.Light;
+		App.MainWindow.RequestedThemeVariant = ThemeHelper.GetThemeVariant(_configController.Config.Theme);
 	}
 
 	/// <summary>

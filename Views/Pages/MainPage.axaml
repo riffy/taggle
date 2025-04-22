@@ -15,7 +15,8 @@
 		<Grid
 			Name="TitleBarHost"
 			ColumnDefinitions="Auto, Auto, *, Auto"
-			Background="Transparent">
+			Background="Transparent"
+			Margin="10, 0, 10, 0">
 			<Image
 				Margin="12 4"
 				IsHitTestVisible="False"
@@ -32,7 +33,8 @@
 			</Image>
 			<TextBlock
 				Text="{Binding Title, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
-				FontSize="12"
+				FontSize="16"
+				FontFamily="{StaticResource UrbanistFont}"
 				IsHitTestVisible="False"
 				VerticalAlignment="Center"
 				Grid.Column="1">
@@ -64,6 +66,36 @@
 					</AutoCompleteBox.InnerRightContent>
 				</AutoCompleteBox>
 			</Border>
+			<Button Grid.Column="3">
+				<Button.Content>
+					<StackPanel
+						Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="{Binding NotificationIcon}" />
+						<ui:InfoBadge
+							Value="{Binding UnreadNotificationsCount}"
+							IsVisible="{Binding HasUnreadNotifications}"/>
+					</StackPanel>
+				</Button.Content>
+				<Button.Flyout>
+					<Flyout
+						Placement="BottomEdgeAlignedRight">
+						<Flyout.Content>
+							<StackPanel
+								Width="300"
+								MaxWidth="300"
+								MaxHeight="400">
+								<ui:InfoBar
+									IsClosable="False"
+									Severity="Informational"
+									Message="No unread notifications ..."
+									IsOpen="True"
+									IsIconVisible="True"
+									IsVisible="{Binding !HasUnreadNotifications}"/>
+							</StackPanel>
+						</Flyout.Content>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
 		</Grid>
 		<!-- Navigation & Content -->
 		<ui:NavigationView

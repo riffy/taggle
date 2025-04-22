@@ -38,6 +38,11 @@ public sealed partial class MainPageViewModel : ViewModelBase
 	{
 		NavigationItems.Add(new("Home", Symbol.Home, null, Symbol.HomeFilled));
 		NavigationItems.Add(new("Search", Symbol.Zoom));
+		NavigationItems.Add(new(
+			"Repositories",
+			Symbol.ZipFolder,
+			new(typeof(RepositoriesFrameViewModel)),
+			Symbol.ZipFolderFilled));
 		FooterNavigations.Add(new(
 			"Settings",
 			Symbol.Settings,
@@ -55,6 +60,14 @@ public sealed partial class MainPageViewModel : ViewModelBase
 			{
 				CurrentFrame = (ViewModelBase)_serviceProvider.GetRequiredService(item.Target.TargetType);
 				_logController.Debug($"Frame navigation to {item.Name}");
+				foreach (var ni in NavigationItems.Where(ni => ni != item && ni.Icon != ni.DefaultIcon))
+					ni.Icon = ni.DefaultIcon;
+				if (item.ActiveIcon is not null)
+				{
+					_logController.Debug($"Active icon navigation to {item.Name}");
+					item.Icon = (Symbol)item.ActiveIcon;
+				}
+
 			}
 		}
 		catch (Exception ex)
@@ -67,6 +80,18 @@ public sealed partial class MainPageViewModel : ViewModelBase
 	#region FRAME
 	[ObservableProperty]
 	private ViewModelBase? _currentFrame;
+
+	#endregion
+
+	#region NOTIFICATIONS
+	[ObservableProperty]
+	private bool _hasUnreadNotifications;
+
+	[ObservableProperty]
+	private Symbol _notificationIcon = Symbol.Alert;
+
+	[ObservableProperty]
+	private uint _unreadNotificationsCount;
 
 	#endregion
 }

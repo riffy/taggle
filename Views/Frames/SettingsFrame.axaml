@@ -8,25 +8,32 @@
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Taggle.Views.Frames.SettingsFrame"
 	x:DataType="vmf:SettingsFrameViewModel">
-	<StackPanel Orientation="Vertical">
-		<ui:SettingsExpander Header="General" IconSource="Star" IsExpanded="True" FontFamily="Urbanist">
-			<ui:SettingsExpanderItem>
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="DarkTheme" />
-					<TextBlock
-						FontFamily="Urbanist"
-						Text="Dark-Mode"
-						Margin="10, 0, 0, 0" />
-				</StackPanel>
-				<ui:SettingsExpanderItem.Footer>
-					<ToggleSwitch
-						IsChecked="{Binding IsDarkModeEnabled}"
-						OffContent=""
-						OnContent=""
-						Width="40" />
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-		</ui:SettingsExpander>
-	</StackPanel>
+	<ScrollViewer
+		Margin="{StaticResource DefaultFrameMargin}"
+		FontFamily="{StaticResource UrbanistFont}">
+		<StackPanel Spacing="8">
+			<ui:SettingsExpander
+				Header="App Theme"
+				IconSource="DarkTheme"
+				Description="Change the current app theme">
+				<ui:SettingsExpander.Footer>
+					<ComboBox
+						SelectedItem="{Binding SelectedTheme}"
+						ItemsSource="{Binding AppThemes}"
+						MinWidth="150" />
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander
+				IconSource="Folder"
+				Header="App Data"
+				Description="Where config and database is located">
+				<ui:SettingsExpander.Footer>
+					<Button
+						Content="Open"
+						Command="{Binding OpenAppDataFolderCommand}"/>
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>
 
