@@ -1,20 +1,25 @@
 ﻿namespace Taggle.ViewModels.Pages;
 
 [RegisterSingleton]
-public sealed partial class SplashScreenViewModel : ViewModelBase
+public sealed partial class SplashScreenPageViewModel : ViewModelBase
 {
+	private readonly IMessenger _messenger = WeakReferenceMessenger.Default;
 	private readonly AppDataService _appDataService;
 	private readonly DatabaseService _databaseService;
 	private readonly LogController _logController;
+	private readonly ConfigController _configController;
 
-	public SplashScreenViewModel(AppDataService ads, DatabaseService ds, LogController lc)
+	public SplashScreenPageViewModel(AppDataService ads, ConfigController cc, DatabaseService ds, LogController lc)
 	{
 		_appDataService = ads;
 		_databaseService = ds;
 		_logController = lc;
+		_configController = cc;
 		_loadQueue.Enqueue(InitializeApp);
 		_loadQueue.Enqueue(InitializeLog);
 		_loadQueue.Enqueue(InitializeDatabase);
+		_loadQueue.Enqueue(InitializeConfig);
+		_loadQueue.Enqueue(FinalizeApp);
 		TriggerNextLoadStep();
 	}
 
@@ -27,11 +32,10 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 	/// </summary>
 	private async Task TriggerNextLoadStep()
 	{
-		LoadingText = "";
 		if (_loadQueue.Count > 0)
-		{
 			try
 			{
+				LoadingText = "";
 				if (await _loadQueue.Dequeue().Invoke())
 					TriggerNextLoadStep();
 				else
@@ -44,10 +48,9 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 					$"Error while trying to ensure AppData-Directory:\n{ex.Message}",
 					InfoBarSeverity.Error);
 			}
-
-		}
 		else
-			DisplayInfoBar("Loading", "Done", InfoBarSeverity.Informational);
+			_messenger.Send(new MainWindowRouteMessage(typeof(MainPageViewModel)));
+
 	}
 	#endregion
 
@@ -60,16 +63,14 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 	{
 		try
 		{
-			if (!_appDataService.EnsureAppDataDirectory())
-			{
-				DisplayInfoBar(
-					"Error",
-					"Error while trying to ensure AppData-Directory",
-					InfoBarSeverity.Error);
-				return false;
-			}
+			LoadingText = "Initializing AppData-Directory ...";
+			if (_appDataService.EnsureAppDataDirectory()) return true;
+			DisplayInfoBar(
+				"Error",
+				"Error while trying to ensure AppData-Directory",
+				InfoBarSeverity.Error);
+			return false;
 
-			return true;
 		}
 		catch (Exception ex)
 		{
@@ -88,6 +89,7 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 	{
 		try
 		{
+			LoadingText = "Initializing Logger ...";
 			if (!await _logController.EnsureLogFile())
 			{
 				DisplayInfoBar(
@@ -96,7 +98,7 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 					InfoBarSeverity.Error);
 				return false;
 			}
-			_logController.Log("Log initialized");
+			_logController.Info("Log initialized");
 			return true;
 		}
 		catch (Exception ex)
@@ -116,18 +118,17 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 	{
 		try
 		{
-			if (!await _databaseService.EnsureDatabase())
-			{
-				DisplayInfoBar(
-					"Error",
-					"Error while trying to ensure Database.",
-					InfoBarSeverity.Error);
-				return false;
-			}
-			return true;
+			LoadingText = "Creating / Migrating Database ...";
+			if (await _databaseService.EnsureDatabase()) return true;
+			DisplayInfoBar(
+				"Error",
+				"Error while trying to ensure Database.",
+				InfoBarSeverity.Error);
+			return false;
 		}
 		catch (Exception ex)
 		{
+			_logController.Exception(ex);
 			DisplayInfoBar(
 				"Critical Error",
 				$"Cirtial Error while initializing Database:\n{ex.Message}",
@@ -136,11 +137,58 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 		}
 	}
 
+	/// <summary>
+	/// Initialize database and apply migrations.
+	/// </summary>
+	private async Task<bool> InitializeConfig()
+	{
+		try
+		{
+			LoadingText = "Loading Configuration ...";
+			if (await _configController.InitializeConfig()) return true;
+			DisplayInfoBar(
+				"Error",
+				"Error while trying to initialize Configuration.",
+				InfoBarSeverity.Error);
+			return false;
+		}
+		catch (Exception ex)
+		{
+			_logController.Exception(ex);
+			DisplayInfoBar(
+				"Critical Error",
+				$"Cirtial Error while initializing Database:\n{ex.Message}",
+				InfoBarSeverity.Error);
+			return false;
+		}
+	}
+
+	/// <summary>
+	/// Finalizes the app, in case the data is loaded faster
+	/// than the UI, queues itself to delay any further UI action.
+	/// </summary>
+	/// <returns></returns>
+	private async Task<bool> FinalizeApp()
+	{
+		if (App.MainWindow is null)
+		{
+			_logController.Debug("MainWindow not available yet... Retrying...");
+			_loadQueue.Enqueue(FinalizeApp);
+			await Task.Delay(500);
+		}
+		else if (!App.MainWindow.IsLoaded)
+		{
+			_logController.Debug("MainWindow available, but not loaded yet... Retrying...");
+			_loadQueue.Enqueue(FinalizeApp);
+			await Task.Delay(500);
+		}
+		return true;
+	}
 	#endregion
 
 	#region LOADING TEXT
 	[ObservableProperty]
-	private string _loadingText = "Test test";
+	private string _loadingText = "";
 	#endregion
 
 	#region INFO BAR
@@ -175,7 +223,7 @@ public sealed partial class SplashScreenViewModel : ViewModelBase
 
 	#region VALUE PROGRESSBAR
 	[ObservableProperty]
-	private bool _showValueProgress  = true;
+	private bool _showValueProgress;
 	[ObservableProperty]
 	private double _valueProgress;
 	[ObservableProperty]

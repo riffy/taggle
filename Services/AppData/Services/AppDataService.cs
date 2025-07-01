@@ -3,7 +3,11 @@
 [RegisterSingleton]
 public sealed class AppDataService
 {
-	public static string AppDataDirectory { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDomain.CurrentDomain.FriendlyName);
+	/// <summary>
+	/// The path to the folder of the %appdata% directory for Taggle
+	/// </summary>
+	public static string AppDataDirectory { get; } =
+		Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppDomain.CurrentDomain.FriendlyName);
 
 	#region DIRECTORY
 	/// <summary>

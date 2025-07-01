@@ -18,7 +18,15 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'!='Debug|AnyCPU'">
 		<SelfContained>true</SelfContained>
 	</PropertyGroup>
-	
+
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
@@ -47,6 +55,5 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

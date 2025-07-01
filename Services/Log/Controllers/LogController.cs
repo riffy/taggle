@@ -3,12 +3,31 @@
 [RegisterSingleton]
 public sealed class LogController
 {
+	/// <summary>
+	/// If debug logs should be logged to console
+	/// </summary>
 	private readonly bool _debugMode;
+
+	/// <summary>
+	/// The log filename of the current session
+	/// </summary>
 	private readonly string _logFileName = $"{DateTime.UtcNow:yyyy-MM-dd HH-mm-ss}.log";
+
+	/// <summary>
+	/// The directory in %temp% for Taggle for the logs
+	/// </summary>
 	private readonly string _logDirectory = Path.Combine(Path.GetTempPath() + AppDomain.CurrentDomain.FriendlyName);
 
-	public string LogFilePath => Path.Combine(_logDirectory, _logFileName);
+	/// <summary>
+	/// The file path for the current logfile
+	/// </summary>
+	public string LogFilePath =>
+		Path.Combine(_logDirectory, _logFileName);
 
+	/// <summary>
+	/// All logs during the session.
+	/// TODO: Possibly clear logs if a certain threshold is reached
+	/// </summary>
 	public readonly ObservableCollection<LogMessage> Logs = [];
 
 	public LogController()
@@ -31,29 +50,78 @@ public sealed class LogController
 		return true;
 	}
 
-	#region LOG
-
+	#region INFO / WARN / ERROR / DEBUG
 	/// <summary>
-	/// Logs the message with the severity and the title
+	/// Logs an informational message
 	/// </summary>
-	public void Log(string title, string message, InfoBarSeverity severity = InfoBarSeverity.Informational) =>
-		LogInternal(title, message, severity);
-
-	/// <summary>
-	/// Logs the message with the severity and the title is the class name of the caller
-	/// </summary>
-	public void Log(string message, InfoBarSeverity severity = InfoBarSeverity.Informational, [CallerFilePath] string filePath = "")
+	public void Info(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
 	{
 		var className = Path.GetFileNameWithoutExtension(filePath);
-		LogInternal(className, message, severity);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Informational);
 	}
 
 	/// <summary>
+	/// Logs a warning message
+	/// </summary>
+	public void Warn(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Warning);
+	}
+
+	/// <summary>
+	/// Logs an exception with calling method information
+	/// </summary>
+	public void Exception(Exception ex,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, $"Method: {memberName} - {ex.Message}", LogSeverity.Error);
+	}
+
+	/// <summary>
+	/// Logs an error message
+	/// </summary>
+	public void Error(string message,
+		[CallerMemberName] string memberName = "",
+		[CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal($"{className} - {memberName}", message, LogSeverity.Error);
+	}
+
+	/// <summary>
+	/// Logs a debug message
+	/// </summary>
+	public void Debug(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Debug);
+	}
+
+	/// <summary>
+	/// Logs a success message
+	/// </summary>
+	public void Success(string message, [CallerFilePath] string filePath = "")
+	{
+		var className = Path.GetFileNameWithoutExtension(filePath);
+		LogInternal(className, message, LogSeverity.Success);
+	}
+	#endregion
+
+	#region LOG
+	/// <summary>
 	/// Internal method to handle logging logic
 	/// </summary>
-	private void LogInternal(string title, string message, InfoBarSeverity severity)
+	private void LogInternal(string title, string message, LogSeverity severity)
 	{
-		if (_debugMode) Console.WriteLine(message);
+		if (_debugMode) Console.WriteLine($"{title} - {message}");
+		if (severity == LogSeverity.Debug) return;
 
 		var logMessage = new LogMessage(title, message, severity);
 		Logs.Add(logMessage);

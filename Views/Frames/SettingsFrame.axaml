@@ -1,0 +1,39 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmf="clr-namespace:Taggle.ViewModels.Frames"
+	xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Taggle.Views.Frames.SettingsFrame"
+	x:DataType="vmf:SettingsFrameViewModel">
+	<ScrollViewer
+		Margin="{StaticResource DefaultFrameMargin}"
+		FontFamily="{StaticResource UrbanistFont}">
+		<StackPanel Spacing="8">
+			<ui:SettingsExpander
+				Header="App Theme"
+				IconSource="DarkTheme"
+				Description="Change the current app theme">
+				<ui:SettingsExpander.Footer>
+					<ComboBox
+						SelectedItem="{Binding SelectedTheme}"
+						ItemsSource="{Binding AppThemes}"
+						MinWidth="150" />
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander
+				IconSource="Folder"
+				Header="App Data"
+				Description="Where config and database is located">
+				<ui:SettingsExpander.Footer>
+					<Button
+						Content="Open"
+						Command="{Binding OpenAppDataFolderCommand}"/>
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
+

@@ -6,6 +6,7 @@
 	xmlns:sty="using:FluentAvalonia.Styling"
 	xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+	xmlns:converters="clr-namespace:Taggle.Converters"
 	RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
@@ -14,6 +15,8 @@
 
 	<Application.Resources>
 		<FontFamily x:Key="UrbanistFont">avares://Taggle/Assets/Fonts/Urbanist/static#Urbanist</FontFamily>
+		<converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+		<Thickness x:Key="DefaultFrameMargin">20 20 20 0</Thickness>
 	</Application.Resources>
 
     <Application.Styles>

@@ -10,6 +10,7 @@ public sealed class DatabaseService(IDbContextFactory<TaggleContext> dbContextFa
 	public async Task<bool> EnsureDatabase()
 	{
 		await using var dbContext = await dbContextFactory.CreateDbContextAsync();
-		return await dbContext.Database.EnsureCreatedAsync();
+		await dbContext.Database.MigrateAsync();
+		return true;
 	}
 }

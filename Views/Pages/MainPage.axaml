@@ -1,0 +1,143 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vmp="clr-namespace:Taggle.ViewModels.Pages"
+	xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+	xmlns:pages="clr-namespace:Taggle.Views.Pages"
+	xmlns:mnav="using:Taggle.Models.Navigation"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Taggle.Views.Pages.MainPage"
+	x:DataType="vmp:MainPageViewModel">
+	<Grid RowDefinitions="Auto, *">
+		<!-- Top Bar -->
+		<Grid
+			Name="TitleBarHost"
+			ColumnDefinitions="Auto, Auto, *, Auto"
+			Background="Transparent"
+			Margin="10, 0, 10, 0">
+			<Image
+				Margin="12 4"
+				IsHitTestVisible="False"
+				Source="/Assets/avalonia-logo.ico"
+				Width="18" Height="18"
+				DockPanel.Dock="Left"
+				Name="WindowIcon"
+				RenderOptions.BitmapInterpolationMode="HighQuality">
+				<Image.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+					</OnPlatform>
+				</Image.IsVisible>
+			</Image>
+			<TextBlock
+				Text="{Binding Title, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"
+				FontSize="16"
+				FontFamily="{StaticResource UrbanistFont}"
+				IsHitTestVisible="False"
+				VerticalAlignment="Center"
+				Grid.Column="1">
+				<TextBlock.IsVisible>
+					<OnPlatform Default="False">
+						<On Options="Windows" Content="True" />
+					</OnPlatform>
+				</TextBlock.IsVisible>
+			</TextBlock>
+			<Border
+				Grid.Column="2"
+				Padding="6">
+				<AutoCompleteBox
+					Name="SearchBox"
+					MaxWidth="500"
+					Watermark="Search"
+					FilterMode="ContainsOrdinal">
+					<AutoCompleteBox.InnerRightContent>
+						<StackPanel
+							Orientation="Horizontal">
+							<Button
+								Margin="0, 5, 10, 5"
+								IsEnabled="False">
+								<Button.Content>
+									<ui:SymbolIcon Symbol="Zoom"/>
+								</Button.Content>
+							</Button>
+						</StackPanel>
+					</AutoCompleteBox.InnerRightContent>
+				</AutoCompleteBox>
+			</Border>
+			<Button Grid.Column="3">
+				<Button.Content>
+					<StackPanel
+						Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="{Binding NotificationIcon}" />
+						<ui:InfoBadge
+							Value="{Binding UnreadNotificationsCount}"
+							IsVisible="{Binding HasUnreadNotifications}"/>
+					</StackPanel>
+				</Button.Content>
+				<Button.Flyout>
+					<Flyout
+						Placement="BottomEdgeAlignedRight">
+						<Flyout.Content>
+							<StackPanel
+								Width="300"
+								MaxWidth="300"
+								MaxHeight="400">
+								<ui:InfoBar
+									IsClosable="False"
+									Severity="Informational"
+									Message="No unread notifications ..."
+									IsOpen="True"
+									IsIconVisible="True"
+									IsVisible="{Binding !HasUnreadNotifications}"/>
+							</StackPanel>
+						</Flyout.Content>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+		</Grid>
+		<!-- Navigation & Content -->
+		<ui:NavigationView
+			x:Name="NavigationPanel"
+			Grid.Row="1"
+			Margin="0, 0, 10, 5"
+			PaneDisplayMode="Auto"
+			IsSettingsVisible="False"
+			AlwaysShowHeader="False"
+			MenuItemsSource="{Binding NavigationItems}"
+			FooterMenuItemsSource="{Binding FooterNavigations}"
+			SelectionChanged="NavigationPanel_OnSelectionChanged">
+			<!-- Items -->
+			<ui:NavigationView.MenuItemTemplateSelector>
+				<mnav:NavigationItemTemplateSelector>
+					<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+						<ui:NavigationViewItem
+							Content="{Binding Name}"
+							IconSource="{Binding Icon}"
+							SelectsOnInvoked="{Binding SelectOnInvoke}"
+							/>
+					</DataTemplate>
+					<mnav:NavigationItemTemplateSelector.ItemTemplateWithChildren>
+						<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+							<ui:NavigationViewItem
+								Content="{Binding Name}"
+								IconSource="{Binding Icon}"
+								MenuItems="{Binding Children}"
+								SelectsOnInvoked="{Binding SelectOnInvoke}"
+							/>
+						</DataTemplate>
+					</mnav:NavigationItemTemplateSelector.ItemTemplateWithChildren>
+					<mnav:NavigationItemTemplateSelector.SeparatorTemplate>
+						<DataTemplate DataType="{x:Type mnav:NavigationItem}">
+							<ui:NavigationViewItemSeparator />
+						</DataTemplate>
+					</mnav:NavigationItemTemplateSelector.SeparatorTemplate>
+				</mnav:NavigationItemTemplateSelector>
+			</ui:NavigationView.MenuItemTemplateSelector>
+			<!-- Content -->
+			<ui:Frame Name="FrameView" Content="{Binding CurrentFrame}" />
+		</ui:NavigationView>
+	</Grid>
+</UserControl>
+
